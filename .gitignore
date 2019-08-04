@@ -1,0 +1,16 @@
+# Key file
+secret.gradle
+
+# IntelliJ
+/.idea/
+/build/
+out/
+
+# Gradle
+/.gradle/
+
+# Eclipse
+.classpath
+.project
+/.settings/
+/bin/
