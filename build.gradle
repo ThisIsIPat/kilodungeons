@@ -43,14 +43,6 @@ dependencies {
     // testImplementation 'com.github.seeseemelk:MockBukkit-v1.13-spigot:0.2.0'
 }
 
-if (hasProperty('buildScan')) {
-    // Necessary for build scans in Travis
-    buildScan {
-        termsOfServiceUrl = 'https://gradle.com/terms-of-service'
-        termsOfServiceAgree = 'yes'
-    }
-}
-
 shadowJar {
     baseName = project_artifact
     classifier = null
