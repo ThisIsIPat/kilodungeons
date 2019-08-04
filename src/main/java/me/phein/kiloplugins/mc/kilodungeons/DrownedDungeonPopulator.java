@@ -50,6 +50,11 @@ public class DrownedDungeonPopulator extends BlockPopulator {
 
                 int ox = source.getX() * 16 + offsetX, oz = source.getZ() * 16 + offsetZ;
 
+                while(world.getBlockAt(ox, offsetY, oz).getBlockData() instanceof Waterlogged || world.getBlockAt(ox, offsetY, oz).getType() == Material.WATER) {
+                    offsetY--;
+                    if(offsetY == 0)break;
+                }
+
                 KiloDungeonsPlugin.instance.getLogger().info("Drowned Dungeon Spawned At: (" + ox +", " + offsetY + ", " + oz + ")");
 
                 boolean cont = true;
@@ -60,6 +65,8 @@ public class DrownedDungeonPopulator extends BlockPopulator {
                             if(world.isChunkGenerated((ox + x) / 16, (oz + z) / 16)) {
                                 Block block = world.getBlockAt(ox + x, offsetY + y, oz + z);
 
+                                //TO-DO: Use Noise to make holes in the walls.
+
                                 if(x == 0 || x == 9 || y == 0 || y == 5 || z == 0 || z == 9) block.setType(random.nextBoolean() ? Material.COBBLESTONE : Material.MOSSY_COBBLESTONE);
                                 else block.setType(Material.WATER);
                             }
@@ -69,6 +76,31 @@ public class DrownedDungeonPopulator extends BlockPopulator {
                         }
                     }
                 }
+
+                for(int y = offsetY - 1; y > 0; y--) {
+                    int test = 0;
+                    if(world.getBlockAt(ox, y, oz).getBlockData().getMaterial() != Material.WATER) {
+                        test++;
+                    }
+                    else {
+                        world.getBlockAt(ox, y, oz).setType(random.nextBoolean() ? Material.MOSSY_COBBLESTONE_WALL : Material.COBBLESTONE_WALL);
+                    }
+                    if(world.getBlockAt(ox + 9, y, oz).getBlockData().getMaterial() != Material.WATER) {
+                        test++;
+                    }
+                    else world.getBlockAt(ox + 9, y, oz).setType(random.nextBoolean() ? Material.MOSSY_COBBLESTONE_WALL : Material.COBBLESTONE_WALL);
+                    if(world.getBlockAt(ox, y, oz + 9).getBlockData().getMaterial() != Material.WATER) {
+                        test++;
+                    }
+                    else world.getBlockAt(ox, y, oz + 9).setType(random.nextBoolean() ? Material.MOSSY_COBBLESTONE_WALL : Material.COBBLESTONE_WALL);
+                    if(world.getBlockAt(ox + 9, y, oz + 9).getBlockData().getMaterial() != Material.WATER) {
+                        test++;
+                    }
+                    else world.getBlockAt(ox + 9, y, oz + 9).setType(random.nextBoolean() ? Material.MOSSY_COBBLESTONE_WALL : Material.COBBLESTONE_WALL);
+                    world.getBlockAt(ox + 4, y, oz + 4).setType(random.nextBoolean() ? Material.MOSSY_COBBLESTONE : Material.COBBLESTONE);
+                    if(test >= 4)break;
+                }
+
                 if(cont) {
                     Block chest1 = world.getBlockAt(ox + 1, offsetY + 1, oz + 2);
                     Block chest2 = world.getBlockAt(ox + 1, offsetY + 1, oz + 7);
