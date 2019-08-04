@@ -1,0 +1,63 @@
+buildscript {
+    ext.project_name = 'KiloDungeons'
+    ext.project_description = 'Additional dungeon generation for any world!'
+
+    ext.project_group = 'me.phein.kiloplugins.mc'
+    ext.project_artifact = 'kilodungeons'
+    ext.project_version = '1.0'
+
+    repositories {
+        jcenter()
+    }
+}
+
+plugins {
+    id "java-library"
+    id "com.github.johnrengelman.shadow" version "4.0.2"
+}
+
+group project_group
+version project_version
+
+repositories {
+    maven { url 'https://jitpack.io' }
+    jcenter()
+    maven { url = "http://repo.aikar.co/nexus/content/groups/aikar/" }
+    maven { url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
+    maven { url = 'https://oss.sonatype.org/content/repositories/snapshots' }
+    mavenLocal()
+}
+
+dependencies {
+    /// MAIN ///
+    // compileOnly 'org.spigotmc:minecraft-server:1.14.4-SNAPSHOT'
+    // compileOnly 'org.bukkit:craftbukkit:1.14.4-R0.1-SNAPSHOT'
+    compileOnly 'org.spigotmc:spigot-api:1.14.4-R0.1-SNAPSHOT'
+
+    implementation 'com.github.JavaFactoryDev:LightningStorage:2.3.7'
+    implementation "co.aikar:minecraft-timings:1.0.4"
+
+    /// TEST ///
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+
+    // testImplementation 'com.github.seeseemelk:MockBukkit-v1.13-spigot:0.2.0'
+}
+
+if (hasProperty('buildScan')) {
+    // Necessary for build scans in Travis
+    buildScan {
+        termsOfServiceUrl = 'https://gradle.com/terms-of-service'
+        termsOfServiceAgree = 'yes'
+    }
+}
+
+shadowJar {
+    baseName = project_artifact
+    classifier = null
+
+    exclude 'META-INF/**'
+    exclude 'NOTICE'
+    exclude 'LICENSE'
+
+    relocate 'co.aikar.timings.lib', 'me.phein.kiloplugins.mc.timingslib'
+}
