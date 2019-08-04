@@ -100,7 +100,7 @@ public class DrownedDungeonPopulator extends BlockPopulator {
                     switch (type) {
                         default:
                         case 0:
-                            spawner = world.getBlockAt(ox + 4, offsetY + 3, oz + 4);
+                            spawner = world.getBlockAt(ox + 4, offsetY + 1, oz + 4);
                             spawner.setType(Material.SPAWNER);
                             spawnerData = (CreatureSpawner)spawner.getState();
                             spawnerData.setSpawnedType(EntityType.DROWNED);
@@ -108,6 +108,7 @@ public class DrownedDungeonPopulator extends BlockPopulator {
                             break;
                         case 1:
                             Block ironBars = world.getBlockAt(ox + 4, offsetY + 4, oz + 4);
+                            ironBars.setType(Material.IRON_BARS);
                             Waterlogged ironBarsWater = (Waterlogged)ironBars.getBlockData();
                             ironBarsWater.setWaterlogged(true);
                             BlockState ironBarsState = ironBars.getState();
