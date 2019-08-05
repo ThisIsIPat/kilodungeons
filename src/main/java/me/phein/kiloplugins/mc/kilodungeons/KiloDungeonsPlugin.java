@@ -1,6 +1,7 @@
 package me.phein.kiloplugins.mc.kilodungeons;
 
 import me.phein.kiloplugins.mc.kilodungeons.config.ConfigManager;
+import me.phein.kiloplugins.mc.kilodungeons.dungeons.drowned.DrownedDungeonPopulator;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -37,7 +38,7 @@ public class KiloDungeonsPlugin extends JavaPlugin implements Listener {
 
     @EventHandler
     public void onWorldInit(WorldInitEvent event) {
-        BlockPopulator drownedDungeonPopulator = new DrownedDungeonPopulator(this.getLogger(), configManager.getConfig());
+        BlockPopulator drownedDungeonPopulator = new DrownedDungeonPopulator(event.getWorld(), this.getLogger(), configManager.getConfig());
         event.getWorld().getPopulators().add(drownedDungeonPopulator);
     }
 }
