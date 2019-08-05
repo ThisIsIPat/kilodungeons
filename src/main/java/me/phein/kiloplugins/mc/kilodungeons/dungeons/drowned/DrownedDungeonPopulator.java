@@ -55,7 +55,7 @@ public class DrownedDungeonPopulator extends BlockPopulator {
             case WARM_OCEAN:
         }
 
-        int absY = random.nextInt(world.getHighestBlockYAt(absX, absZ) - 7); // 7 = minimal depth to spawn
+        int absY = world.getHighestBlockYAt(absX, absZ) - 7; // 7 = minimal depth to spawn
 
         while (world.getBlockAt(absX, absY, absZ).getBlockData() instanceof Waterlogged || world.getBlockAt(absX, absY, absZ).getType() == Material.WATER) {
             absY--;
