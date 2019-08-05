@@ -70,7 +70,7 @@ public class DrownedDungeonGenerator {
     }
 
     private void generateFloor(int x, int y, int z) {
-        double selector = (noiseGen.noise(0.1 * x, 0.1 * z) + 1.0) / 2;
+        double selector = (noiseGen.noise(0.8 * x, 0.8 * z) + 1.0) / 2;
         Material randomBlock = blocks.getRandomValue(selector);
         world.getBlockAt(x, y, z).setType(randomBlock);
     }
