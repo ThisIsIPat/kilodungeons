@@ -152,7 +152,7 @@ public class DrownedDungeonGenerator {
 
         for (int relX = -1; relX <= 1; relX++) {
             for (int relZ = -1; relZ <= 1; relZ++) {
-                if (relX == 0 && relZ == 0) world.getBlockAt(originX, ceilingHeight, originZ).setType(Material.POLISHED_ANDESITE);
+                if (relX == 0 && relZ == 0) world.getBlockAt(originX, ceilingHeight, originZ).setType(Material.MAGMA_BLOCK);
                 else generateBlockAt(floorPalette, originX + relX, ceilingHeight, originZ + relZ);
             }
         }
@@ -234,7 +234,7 @@ public class DrownedDungeonGenerator {
 
     private void generateFloor(int originX, int originY, int originZ) {
         // FLOOR - center
-        world.getBlockAt(originX, originY, originZ).setType(Material.POLISHED_ANDESITE);
+        world.getBlockAt(originX, originY, originZ).setType(Material.POLISHED_GRANITE);
 
         // FLOOR - x + z axis (Fat plus-shape)
         for (int relHorIt = 5; relHorIt > 0; relHorIt--) {
