@@ -37,11 +37,41 @@ public class DrownedDungeonGenerator {
     }
 
     public void generate(int originX, int originY, int originZ) {
-        originY += 5; // TODO TEMPORARY
-
         generateFloor(originX, originY, originZ);
         generateWalls(originX, originY, originZ);
         generateCeiling(originX, originY, originZ);
+        generateCorners(originX, originY, originZ);
+    }
+
+    private void generateCorners(int originX, int originY, int originZ) {
+        generateMirroredBlocks(Material.GLASS, originX, originY + 1, originZ, 4, 2);
+        generateMirroredBlocks(Material.GLASS, originX, originY + 1, originZ, 4, 3);
+        generateMirroredBlocks(Material.GLASS, originX, originY + 2, originZ, 4, 2);
+        generateMirroredBlocks(Material.GLASS, originX, originY + 2, originZ, 4, 3);
+        generateMirroredBlocks(Material.GLASS, originX, originY + 2, originZ, 3, 3);
+
+        generateMirroredBlocks(Material.GLASS, originX, originY + 3, originZ, 4, 2);
+        generateMirroredBlocks(Material.GLASS, originX, originY + 3, originZ, 3, 3);
+        generateMirroredBlocks(Material.GLASS, originX, originY + 4, originZ, 4, 2);
+        generateMirroredBlocks(Material.GLASS, originX, originY + 4, originZ, 3, 3);
+
+        generateMirroredBlocks(Material.GLASS, originX, originY + 5, originZ, 3, 2);
+
+        generateMirroredBlocks(Material.GLASS, originX, originY + 6, originZ, 2, 2);
+    }
+
+    private void generateMirroredBlocks(Material material, int originX, int originY, int originZ, int radius, int offset) {
+        generateBlockAt(material, originX + radius, originY, originZ + offset);
+        generateBlockAt(material, originX - radius, originY, originZ - offset);
+        generateBlockAt(material, originX - offset, originY, originZ + radius);
+        generateBlockAt(material, originX + offset, originY, originZ - radius);
+
+        if (offset == 0 || radius == offset) return;
+
+        generateBlockAt(material, originX + radius, originY, originZ - offset);
+        generateBlockAt(material, originX - radius, originY, originZ + offset);
+        generateBlockAt(material, originX + offset, originY, originZ + radius);
+        generateBlockAt(material, originX - offset, originY, originZ - radius);
     }
 
     private void generateCeiling(int originX, int originY, int originZ) {
