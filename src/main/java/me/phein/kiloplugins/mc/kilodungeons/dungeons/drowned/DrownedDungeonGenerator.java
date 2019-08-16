@@ -6,16 +6,23 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.BlockState;
+import org.bukkit.block.CreatureSpawner;
 import org.bukkit.block.data.Bisected;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Directional;
 import org.bukkit.block.data.Waterlogged;
+import org.bukkit.block.data.type.Chest;
 import org.bukkit.block.data.type.Slab;
+import org.bukkit.entity.EntityType;
+import org.bukkit.loot.LootTables;
+import org.bukkit.loot.Lootable;
 import org.bukkit.util.noise.NoiseGenerator;
 import org.bukkit.util.noise.SimplexNoiseGenerator;
 
 public class DrownedDungeonGenerator {
     private final World world;
+    private final double treasureChance;
     private NoiseGenerator noiseGen;
     private Randomizer<Material> stairPalette = new RandomizerBuilder<Material>()
             .addOption(Material.PRISMARINE_BRICK_STAIRS, 2.5)
@@ -30,10 +37,23 @@ public class DrownedDungeonGenerator {
             .addOption(Material.PRISMARINE, 1.5)
             .addOption(Material.DARK_PRISMARINE_SLAB, 0.3)
             .build();
+    private Randomizer<Material> slabPalette = new RandomizerBuilder<Material>()
+            .addOption(Material.DARK_PRISMARINE_SLAB, 0.6)
+            .addOption(Material.PRISMARINE_SLAB, 0.7)
+            .addOption(Material.WATER, 0.6)
+            .build();
+    private Randomizer<Material> brokenFloorPalette = new RandomizerBuilder<Material>()
+            .addOption(Material.DARK_PRISMARINE, 0.4)
+            .addOption(Material.PRISMARINE, 0.4)
+            .addOption(Material.DARK_PRISMARINE_SLAB, 0.7)
+            .addOption(Material.PRISMARINE_SLAB, 0.7)
+            .addOption(Material.WATER, 0.5)
+            .build();
 
-    public DrownedDungeonGenerator(World world) {
+    public DrownedDungeonGenerator(World world, double treasureChance) {
         this.world = world;
         this.noiseGen = new SimplexNoiseGenerator(world);
+        this.treasureChance = treasureChance;
     }
 
     public void generate(int originX, int originY, int originZ) {
@@ -41,6 +61,59 @@ public class DrownedDungeonGenerator {
         generateWalls(originX, originY, originZ);
         generateCeiling(originX, originY, originZ);
         generateCorners(originX, originY, originZ);
+
+        generateBrokenFloor(slabPalette, originX, originY + 1, originZ, 2);
+        generateBrokenFloor(brokenFloorPalette, originX, originY + 1, originZ, 3);
+
+        generateSpawner(originX, originY, originZ);
+
+        generateTreasure(originX, originY, originZ);
+    }
+
+    private void generateTreasure(int originX, int originY, int originZ) {
+        double chestSelector = (noiseGen.noise(3 * originX, 3 * originZ) + 1.0) / 2;
+
+        if (chestSelector > 0.0) {
+            generateChest(originX + 3, originY + 1, originZ - 1, BlockFace.WEST);
+            generateChest(originX - 3, originY + 1, originZ + 1, BlockFace.EAST);
+        } else {
+            generateChest(originX - 1, originY + 1, originZ + 3, BlockFace.SOUTH);
+            generateChest(originX + 1, originY + 1, originZ - 3, BlockFace.NORTH);
+        }
+    }
+
+    private void generateChest(int x, int y, int z, BlockFace facing) {
+        Block block = world.getBlockAt(x, y, z);
+
+        Chest chestBlockData = (Chest) Material.CHEST.createBlockData();
+        chestBlockData.setFacing(facing);
+        chestBlockData.setWaterlogged(true);
+        block.setBlockData(chestBlockData);
+
+        Lootable chest = (Lootable) block.getState();
+
+        boolean treasure = (noiseGen.noise(x, z) + 1.0) / 2 < treasureChance;
+        chest.setLootTable(treasure ? LootTables.SHIPWRECK_TREASURE.getLootTable() : LootTables.UNDERWATER_RUIN_SMALL.getLootTable());
+
+        ((BlockState) chest).update();
+    }
+
+    private void generateSpawner(int originX, int originY, int originZ) {
+        generateBlockAt(Material.MOSSY_COBBLESTONE_WALL, originX, originY + 1, originZ);
+
+        world.getBlockAt(originX, originY + 2, originZ).setType(Material.SPAWNER);
+        CreatureSpawner spawner = ((CreatureSpawner) world.getBlockAt(originX, originY + 2, originZ).getState());
+        spawner.setSpawnedType(EntityType.DROWNED);
+        spawner.update();
+    }
+
+    private void generateBrokenFloor(Randomizer<Material> palette, int originX, int originY, int originZ, int radius) {
+        for (int it = -radius; it < radius; it++) {
+            generateBlockAt(palette, originX + radius, originY, originZ + it);
+            generateBlockAt(palette, originX - radius, originY, originZ - it);
+            generateBlockAt(palette, originX - it, originY, originZ + radius);
+            generateBlockAt(palette, originX + it, originY, originZ - radius);
+        }
     }
 
     private void generateCorners(int originX, int originY, int originZ) {
@@ -79,7 +152,7 @@ public class DrownedDungeonGenerator {
 
         for (int relX = -1; relX <= 1; relX++) {
             for (int relZ = -1; relZ <= 1; relZ++) {
-                if (relX == 0 && relZ == 0) world.getBlockAt(originX, ceilingHeight, originZ).setType(Material.SEA_LANTERN);
+                if (relX == 0 && relZ == 0) world.getBlockAt(originX, ceilingHeight, originZ).setType(Material.POLISHED_ANDESITE);
                 else generateBlockAt(floorPalette, originX + relX, ceilingHeight, originZ + relZ);
             }
         }
@@ -161,7 +234,7 @@ public class DrownedDungeonGenerator {
 
     private void generateFloor(int originX, int originY, int originZ) {
         // FLOOR - center
-        world.getBlockAt(originX, originY, originZ).setType(Material.SEA_LANTERN);
+        world.getBlockAt(originX, originY, originZ).setType(Material.POLISHED_ANDESITE);
 
         // FLOOR - x + z axis (Fat plus-shape)
         for (int relHorIt = 5; relHorIt > 0; relHorIt--) {
@@ -185,7 +258,7 @@ public class DrownedDungeonGenerator {
         }
     }
 
-    private static final double SELECTOR_SIZE_FACTOR = 0.7; // Defines how rapid the palette changes.
+    private static final double SELECTOR_SIZE_FACTOR = 0.75; // Defines how rapid the palette changes.
 
     private void generateBlockAt(Randomizer<Material> palette, int x, int y, int z) {
         generateBlockAt(palette, x, y, z, null, null);
@@ -203,7 +276,10 @@ public class DrownedDungeonGenerator {
     }
 
     private void generateBlockAt(Material material, int x, int y, int z, BlockFace face, Bisected.Half half) {
-        System.out.println("Generating @x" + x + " y" + y + " z" + z);
+        double skipSelector = (noiseGen.noise(2 * x, 2 * y, 2 * z) + 1.0) / 2;
+        if (skipSelector <= 0.4) return;
+
+        // System.out.println("Generating @x" + x + " y" + y + " z" + z);
         Block block = world.getBlockAt(x, y, z);
 
         BlockData data = material.createBlockData();

@@ -27,12 +27,12 @@ public class YmlConfig implements Config {
     }
 
     @Override
-    public double getDrownedChance() {
+    public double getDrownedDungeonChance() {
         return yaml.getOrSetDefault("drowned-chance", 0.01);
     }
 
     @Override
-    public double getDrownedTreasureChance() {
-        return yaml.getOrSetDefault("drowned-treasure-chance", 0.1);
+    public double getDrownedDungeonTreasureChance() {
+        return yaml.getOrSetDefault("drowned-treasure-chance", 0.25);
     }
 }
