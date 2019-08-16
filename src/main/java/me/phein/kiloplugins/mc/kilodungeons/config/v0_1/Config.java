@@ -1,4 +1,4 @@
-package me.phein.kiloplugins.mc.kilodungeons.config.v0_1a;
+package me.phein.kiloplugins.mc.kilodungeons.config.v0_1;
 
 public interface Config {
     double getDrownedDungeonChance();

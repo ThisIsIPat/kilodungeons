@@ -23,26 +23,26 @@ import org.bukkit.util.noise.SimplexNoiseGenerator;
 public class DrownedDungeonGenerator {
     private final World world;
     private final double treasureChance;
-    private NoiseGenerator noiseGen;
-    private Randomizer<Material> stairPalette = new RandomizerBuilder<Material>()
+    private final NoiseGenerator noiseGen;
+    private final Randomizer<Material> stairPalette = new RandomizerBuilder<Material>()
             .addOption(Material.PRISMARINE_BRICK_STAIRS, 2.5)
             .addOption(Material.PRISMARINE_STAIRS, 2)
             .build();
-    private Randomizer<Material> solidWallPalette = new RandomizerBuilder<Material>()
+    private final Randomizer<Material> solidWallPalette = new RandomizerBuilder<Material>()
             .addOption(Material.PRISMARINE_BRICKS, 2)
             .addOption(Material.PRISMARINE, 1.5)
             .build();
-    private Randomizer<Material> floorPalette = new RandomizerBuilder<Material>()
+    private final Randomizer<Material> floorPalette = new RandomizerBuilder<Material>()
             .addOption(Material.PRISMARINE_BRICKS, 1.7)
             .addOption(Material.PRISMARINE, 1.5)
             .addOption(Material.DARK_PRISMARINE_SLAB, 0.3)
             .build();
-    private Randomizer<Material> slabPalette = new RandomizerBuilder<Material>()
+    private final Randomizer<Material> slabPalette = new RandomizerBuilder<Material>()
             .addOption(Material.DARK_PRISMARINE_SLAB, 0.6)
             .addOption(Material.PRISMARINE_SLAB, 0.7)
             .addOption(Material.WATER, 0.6)
             .build();
-    private Randomizer<Material> brokenFloorPalette = new RandomizerBuilder<Material>()
+    private final Randomizer<Material> brokenFloorPalette = new RandomizerBuilder<Material>()
             .addOption(Material.DARK_PRISMARINE, 0.4)
             .addOption(Material.PRISMARINE, 0.4)
             .addOption(Material.DARK_PRISMARINE_SLAB, 0.7)

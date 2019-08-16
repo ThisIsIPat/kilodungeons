@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class RandomizerBuilder<V> {
-    private Set<Randomizer.Pair<V>> options = new HashSet<>();
+    private final Set<Randomizer.Pair<V>> options = new HashSet<>();
 
     public RandomizerBuilder<V> addOption(V option, double chance) {
         options.add(new Randomizer.Pair<>(option, chance));

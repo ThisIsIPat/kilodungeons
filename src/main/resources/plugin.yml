@@ -1,8 +1,10 @@
 name: kilodungeons
-version: "0.1a"
-api-version: "1.14"
+version: "0.1"
 authors:
-- WolfHybrid23
-- IPat
+  - WolfHybrid23
+  - IPat
+
+api-version: "1.14"
 load: STARTUP
+
 main: me.phein.kiloplugins.mc.kilodungeons.KiloDungeonsPlugin

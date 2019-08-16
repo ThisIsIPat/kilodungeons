@@ -1,6 +1,6 @@
 package me.phein.kiloplugins.mc.kilodungeons.dungeons.drowned;
 
-import me.phein.kiloplugins.mc.kilodungeons.config.v0_1a.Config;
+import me.phein.kiloplugins.mc.kilodungeons.config.v0_1.Config;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -13,9 +13,9 @@ import java.util.logging.Logger;
 
 public class DrownedDungeonPopulator extends BlockPopulator {
 
-    private DrownedDungeonGenerator dungeonGenerator;
-    private Logger logger;
-    private Config config;
+    private final DrownedDungeonGenerator dungeonGenerator;
+    private final Logger logger;
+    private final Config config;
 
     public DrownedDungeonPopulator(World world, Logger logger, Config config) {
         this.dungeonGenerator = new DrownedDungeonGenerator(world, config.getDrownedDungeonTreasureChance());
@@ -61,8 +61,7 @@ public class DrownedDungeonPopulator extends BlockPopulator {
             if (absY <= 4) return;
         }
 
-        logger.info("Drowned Dungeon spawning at: (" + absX + ", " + absY + ", " + absZ + ")...");
         dungeonGenerator.generate(absX, absY, absZ);
-        logger.info("Drowned Dungeon spawned at: (" + absX + ", " + absY + ", " + absZ + ")");
+        // logger.info("Drowned Dungeon spawned at: (" + absX + ", " + absY + ", " + absZ + ")");
     }
 }

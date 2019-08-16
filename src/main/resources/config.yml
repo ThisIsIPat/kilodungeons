@@ -1,0 +1,9 @@
+# Version gets tracked to make switching to future versions easier
+version: 0.1
+
+# Dungeon config
+dungeons:
+  small:
+    drowned:                  # 11 x 11 round underwater dungeon
+      spawn-chance: 0.01
+      treasure-chance: 0.25

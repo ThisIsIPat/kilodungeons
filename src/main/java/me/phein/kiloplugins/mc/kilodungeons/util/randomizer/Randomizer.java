@@ -5,7 +5,7 @@ import java.util.Set;
 import java.util.TreeMap;
 
 public class Randomizer<V> {
-    private NavigableMap<Double, V> optionMap = new TreeMap<>();
+    private final NavigableMap<Double, V> optionMap = new TreeMap<>();
 
     public Randomizer(Set<Pair<V>> options) {
         double optionChanceSum = 0.0;
@@ -24,8 +24,8 @@ public class Randomizer<V> {
     }
 
     public static class Pair<T> {
-        private T value;
-        private double chance;
+        private final T value;
+        private final double chance;
 
         public Pair(T value, double chance) {
             this.value = value;

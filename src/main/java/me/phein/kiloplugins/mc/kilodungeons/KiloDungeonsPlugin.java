@@ -17,20 +17,6 @@ public class KiloDungeonsPlugin extends JavaPlugin implements Listener {
         this.configManager = new ConfigManager(this);
     }
 
-    // TODO: Instead provide default config.yml in resources and move this method to ConfigManager or Config
-    /*private void createConfig(File configFile) {
-        getConfig().set("ConfigVersion", CONFIG_VERSION);
-        getConfig().set("DrownedRarity", DROWNED_RARITY);
-        getConfig().set("DrownedTreasureChance", DROWNED_TREASURE_CHANCE);
-
-        try {
-            getConfig().save(configFile);
-        }
-        catch (IOException ex) {
-            getLogger().warning("Failed to save default config file...\n" + ex.toString());
-        }
-    }*/
-
     @Override
     public void onEnable() {
         Bukkit.getPluginManager().registerEvents(this, this);
