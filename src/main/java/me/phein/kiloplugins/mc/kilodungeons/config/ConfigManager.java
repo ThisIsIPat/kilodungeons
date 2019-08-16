@@ -4,6 +4,7 @@ import me.phein.kiloplugins.mc.kilodungeons.KiloDungeonsPlugin;
 import me.phein.kiloplugins.mc.kilodungeons.config.v0_1.Config;
 import me.phein.kiloplugins.mc.kilodungeons.config.v0_1.release.YmlConfig;
 import me.phein.kiloplugins.mc.kilodungeons.exception.ConfigException;
+import me.phein.kiloplugins.mc.kilodungeons.exception.ConfigUnknownVersionException;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -34,7 +35,7 @@ public class ConfigManager {
                 case "0.1":
                     return new me.phein.kiloplugins.mc.kilodungeons.config.v0_1.release.YmlConfig(configFile);
                 default:
-                    return null;
+                    throw new ConfigUnknownVersionException(configFile, version);
             }
         } catch (ConfigException e) {
             throw new RuntimeException("Critical error occurred while attempting to load the config", e);
