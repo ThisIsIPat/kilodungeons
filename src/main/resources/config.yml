@@ -5,5 +5,5 @@ version: 0.1
 dungeons:
   small:
     drowned:                  # 11 x 11 round underwater dungeon
-      spawn-chance: 0.01
-      treasure-chance: 0.25
+      spawn-chance: 0.005     # Higher = More drowned dungeons
+      treasure-chance: 0.25   # Higher = Treasure is more likely in drowned dungeons
