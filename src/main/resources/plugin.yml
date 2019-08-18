@@ -8,3 +8,25 @@ api-version: "1.14"
 load: STARTUP
 
 main: me.phein.kiloplugins.mc.kilodungeons.KiloDungeonsPlugin
+
+commands:
+  kilodungeons:
+    aliases: [kdungeons, kdun]
+    description: Provides general information about the plugin.
+    permission: kilo.dungeons.info
+
+permissions:
+  kilo.*:
+    description: Universal Kilo plugin permission
+    default: op
+    children:
+      - kilo.dungeons.*
+  kilo.dungeons.*:
+    description: Universal KiloDungeons plugin permission
+    default: op
+    children:
+      - kilo.dungeons.info
+
+  kilo.dungeons.info:
+    description: Permission to get general information about the plugin
+    default: op
