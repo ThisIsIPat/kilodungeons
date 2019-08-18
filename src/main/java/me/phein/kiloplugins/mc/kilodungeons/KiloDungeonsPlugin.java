@@ -24,7 +24,7 @@ public class KiloDungeonsPlugin extends JavaPlugin implements Listener {
 
     @EventHandler
     public void onWorldInit(WorldInitEvent event) {
-        BlockPopulator drownedDungeonPopulator = new DrownedDungeonPopulator(event.getWorld(), this.getLogger(), configManager.getConfig());
+        BlockPopulator drownedDungeonPopulator = new DrownedDungeonPopulator(event.getWorld(), this.getLogger(), configManager.getUpdatedConfig());
         event.getWorld().getPopulators().add(drownedDungeonPopulator);
     }
 }
