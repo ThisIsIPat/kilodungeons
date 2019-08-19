@@ -4,7 +4,7 @@ buildscript {
 
     ext.project_group = 'me.phein.kiloplugins.mc'
     ext.project_artifact = 'kilodungeons'
-    ext.project_version = '0.1a'
+    ext.project_version = '0.1'
 
     repositories {
         jcenter()

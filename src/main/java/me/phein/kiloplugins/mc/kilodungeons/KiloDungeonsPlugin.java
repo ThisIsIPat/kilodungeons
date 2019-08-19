@@ -19,7 +19,7 @@ import java.util.List;
 
 public class KiloDungeonsPlugin extends JavaPlugin implements Listener {
     private ConfigManager configManager;
-    private List<RuntimeException> exceptions = new LinkedList<>();
+    private final List<RuntimeException> exceptions = new LinkedList<>();
 
     @Override
     public void onLoad() {
