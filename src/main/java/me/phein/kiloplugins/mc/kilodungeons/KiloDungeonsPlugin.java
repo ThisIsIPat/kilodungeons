@@ -1,6 +1,7 @@
 package me.phein.kiloplugins.mc.kilodungeons;
 
 import me.phein.kiloplugins.mc.kilodungeons.command.KiloDungeonsCommandExecutor;
+import me.phein.kiloplugins.mc.kilodungeons.command.KiloDungeonsNotifierCommandExecutor;
 import me.phein.kiloplugins.mc.kilodungeons.config.ConfigManager;
 import me.phein.kiloplugins.mc.kilodungeons.dungeons.drowned.DrownedDungeonPopulator;
 import org.bstats.bukkit.Metrics;
@@ -21,6 +22,8 @@ public class KiloDungeonsPlugin extends JavaPlugin implements Listener {
     private ConfigManager configManager;
     private final List<RuntimeException> exceptions = new LinkedList<>();
 
+    private KiloDungeonsNotifierCommandExecutor notifierCommand = new KiloDungeonsNotifierCommandExecutor();
+
     @Override
     public void onLoad() {
         this.configManager = new ConfigManager(this);
@@ -32,12 +35,13 @@ public class KiloDungeonsPlugin extends JavaPlugin implements Listener {
 
         Bukkit.getPluginManager().registerEvents(this, this);
         Bukkit.getPluginCommand("kilodungeons").setExecutor(new KiloDungeonsCommandExecutor());
+        Bukkit.getPluginCommand("dungeonnotify").setExecutor(notifierCommand);
     }
 
     @EventHandler
     public void onWorldInit(WorldInitEvent event) {
         try {
-            BlockPopulator drownedDungeonPopulator = new DrownedDungeonPopulator(event.getWorld(), this.getLogger(), configManager.getUpdatedConfig());
+            BlockPopulator drownedDungeonPopulator = new DrownedDungeonPopulator(event.getWorld(), this.getLogger(), configManager.getUpdatedConfig(), notifierCommand);
             event.getWorld().getPopulators().add(drownedDungeonPopulator);
         } catch (RuntimeException e) {
             exceptions.add(e);

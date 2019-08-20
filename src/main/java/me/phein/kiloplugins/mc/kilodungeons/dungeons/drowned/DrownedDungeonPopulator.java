@@ -1,5 +1,6 @@
 package me.phein.kiloplugins.mc.kilodungeons.dungeons.drowned;
 
+import me.phein.kiloplugins.mc.kilodungeons.command.KiloDungeonsNotifierCommandExecutor;
 import me.phein.kiloplugins.mc.kilodungeons.config.v0_1.Config;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
@@ -16,11 +17,13 @@ public class DrownedDungeonPopulator extends BlockPopulator {
     private final DrownedDungeonGenerator dungeonGenerator;
     private final Logger logger;
     private final Config config;
+    private final KiloDungeonsNotifierCommandExecutor notifier;
 
-    public DrownedDungeonPopulator(World world, Logger logger, Config config) {
+    public DrownedDungeonPopulator(World world, Logger logger, Config config, KiloDungeonsNotifierCommandExecutor notifier) {
         this.dungeonGenerator = new DrownedDungeonGenerator(world, config.getDrownedDungeonTreasureChance());
         this.logger = logger;
         this.config = config;
+        this.notifier = notifier;
     }
 
     @Override
@@ -62,6 +65,8 @@ public class DrownedDungeonPopulator extends BlockPopulator {
         }
 
         dungeonGenerator.generate(absX, absY, absZ);
+
+        notifier.notifyDungeonGeneration("drowned", absX, absY, absZ);
         // logger.info("Drowned Dungeon spawned at: (" + absX + ", " + absY + ", " + absZ + ")");
     }
 }
