@@ -22,6 +22,7 @@ public class KiloDungeonsNotifierCommandExecutor implements CommandExecutor {
             if (!senderNames.contains(sender)) {
                 // TODO: 1. Add command to plugin.yml and test it
                 // TODO: 2. Specify what kind of dungeon you want to be notified to
+                // TODO: 3. Remove this line later
                 sender.sendMessage(ChatColor.GRAY + "You will now be notified when a dungeon spawns.");
                 senderNames.add(sender.getName());
             } else {
