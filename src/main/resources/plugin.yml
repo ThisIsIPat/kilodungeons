@@ -1,5 +1,5 @@
 name: KiloDungeons
-version: "0.1"
+version: "0.2"
 authors:
   - IPat
   - WolfHybrid23
@@ -14,6 +14,10 @@ commands:
     aliases: [kdungeons, kdun]
     description: Provides general information about the plugin.
     permission: kilo.dungeons.info
+  dungeonnotify:
+    aliases: [kdunnotify, kdunalert]
+    description: Notifies you if a dungeon gets generated.
+    permission: kilo.dungeons.notify
 
 permissions:
   kilo.*:
@@ -26,7 +30,11 @@ permissions:
     default: op
     children:
       - kilo.dungeons.info
+      - kilo.dungeons.notify
 
   kilo.dungeons.info:
     description: Permission to get general information about the plugin
+    default: op
+  kilo.dungeons.notify:
+    description: Permission to get notified when a dungeon gets generated.
     default: op
