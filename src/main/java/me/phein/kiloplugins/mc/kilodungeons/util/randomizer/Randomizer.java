@@ -1,5 +1,7 @@
 package me.phein.kiloplugins.mc.kilodungeons.util.randomizer;
 
+import org.bukkit.block.CreatureSpawner;
+
 import java.util.NavigableMap;
 import java.util.Set;
 import java.util.TreeMap;

@@ -41,7 +41,7 @@ public class KiloDungeonsNotifierCommandExecutor implements CommandExecutor {
                 continue;
             }
 
-            sender.sendMessage(ChatColor.GRAY + "A dungeon \"" + ChatColor.BOLD + dungeonName + ChatColor.GRAY + "\" spawned at the coordinates:");
+            sender.sendMessage(ChatColor.GRAY + "A dungeon \"" + ChatColor.BOLD + dungeonName + ChatColor.GRAY + "\" spawned withSeed the coordinates:");
             ComponentBuilder builder = new ComponentBuilder(ChatColor.GOLD + "x " + ChatColor.YELLOW + x + "\n" +
                     ChatColor.GOLD + "y " + ChatColor.YELLOW + y + "\n" +
                     ChatColor.GOLD + "z " + ChatColor.YELLOW + z);

@@ -67,6 +67,6 @@ public class DrownedDungeonPopulator extends BlockPopulator {
         dungeonGenerator.generate(absX, absY, absZ);
 
         notifier.notifyDungeonGeneration("drowned", absX, absY + 3, absZ);
-        // logger.info("Drowned Dungeon spawned at: (" + absX + ", " + absY + ", " + absZ + ")");
+        // logger.info("Drowned Dungeon spawned withSeed: (" + absX + ", " + absY + ", " + absZ + ")");
     }
 }
