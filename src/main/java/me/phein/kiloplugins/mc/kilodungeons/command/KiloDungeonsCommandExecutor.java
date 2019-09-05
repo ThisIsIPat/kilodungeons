@@ -6,14 +6,22 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
 public class KiloDungeonsCommandExecutor implements CommandExecutor {
+
+    private String version;
+
+    public KiloDungeonsCommandExecutor(JavaPlugin plugin) {
+        this.version = plugin.getDescription().getVersion();
+    }
+
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (sender instanceof Entity) {
             sender.sendMessage("" + ChatColor.DARK_BLUE + ChatColor.BOLD + "Kilo" + ChatColor.DARK_PURPLE + "Dungeons"
-                    + ChatColor.GOLD + " v0.1"
+                    + ChatColor.GOLD + " v" + version
                     + ChatColor.GRAY + " by IPatGamer and WolfHybrid23");
             sender.sendMessage("" + ChatColor.DARK_GRAY + ChatColor.ITALIC + "Note: This is a pre-release version. More dungeons will be added in the future.");
             sender.sendMessage("");
@@ -26,7 +34,7 @@ public class KiloDungeonsCommandExecutor implements CommandExecutor {
             builder.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new BaseComponent[] { new TextComponent("discord.gg/YUN262D") }));
             sender.spigot().sendMessage(builder.create());
         } else {
-            sender.sendMessage("KiloDungeons v0.1 by IPatGamer and WolfHybrid23");
+            sender.sendMessage("KiloDungeons v" + version + " by IPatGamer and WolfHybrid23");
             sender.sendMessage("Note: This is a pre-release version. More dungeons will be added in the future.");
             sender.sendMessage("");
             sender.sendMessage("Need help? Want to suggest features? Join our Discord community by using this link:");

@@ -1,10 +1,10 @@
-package me.phein.kiloplugins.mc.kilodungeons.dungeons.small;
+package me.phein.kiloplugins.mc.kilodungeons.dungeons.small.dome;
 
 import me.phein.kiloplugins.mc.kilodungeons.util.Palette;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 
-public interface SmallDungeonPalette {
+public interface SmallDomePalette {
     Palette<Material> getFloorCenter();
     Palette<Material> getFloorMaterial();
     Palette<Material> getBrokenFloorMaterial();

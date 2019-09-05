@@ -13,6 +13,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.world.WorldInitEvent;
 import org.bukkit.generator.BlockPopulator;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.LinkedList;
@@ -34,7 +35,7 @@ public class KiloDungeonsPlugin extends JavaPlugin implements Listener {
         Metrics metrics = new Metrics(this);
 
         Bukkit.getPluginManager().registerEvents(this, this);
-        Bukkit.getPluginCommand("kilodungeons").setExecutor(new KiloDungeonsCommandExecutor());
+        Bukkit.getPluginCommand("kilodungeons").setExecutor(new KiloDungeonsCommandExecutor(this));
         Bukkit.getPluginCommand("dungeonnotify").setExecutor(notifierCommand);
     }
 
