@@ -2,12 +2,10 @@ package me.phein.kiloplugins.mc.kilodungeons.dungeons.drowned;
 
 import me.phein.kiloplugins.mc.kilodungeons.command.KiloDungeonsNotifierCommandExecutor;
 import me.phein.kiloplugins.mc.kilodungeons.config.v0_1.Config;
-import org.bukkit.Chunk;
-import org.bukkit.Material;
-import org.bukkit.World;
+import me.phein.kiloplugins.mc.kilodungeons.event.KiloDungeonSpawnEvent;
+import org.bukkit.*;
 import org.bukkit.block.data.Waterlogged;
 import org.bukkit.generator.BlockPopulator;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Random;
 import java.util.logging.Logger;
@@ -27,7 +25,7 @@ public class DrownedDungeonPopulator extends BlockPopulator {
     }
 
     @Override
-    public void populate(@NotNull World world, @NotNull Random random, @NotNull Chunk source) {
+    public void populate(World world, Random random, Chunk source) {
         if (random.nextDouble() >= config.getDrownedDungeonSpawnChance()) {
             return;
         }
@@ -66,7 +64,10 @@ public class DrownedDungeonPopulator extends BlockPopulator {
 
         dungeonGenerator.generate(absX, absY, absZ);
 
-        notifier.notifyDungeonGeneration("drowned", absX, absY + 3, absZ);
-        // logger.info("Drowned Dungeon spawned withSeed: (" + absX + ", " + absY + ", " + absZ + ")");
+        Location dungeonLocation = new Location(world, absX, absY, absZ);
+        Location teleportLocation = new Location(world, absX, absY + 3, absZ);
+
+        Bukkit.getPluginManager().callEvent(new KiloDungeonSpawnEvent(dungeonLocation, teleportLocation));
+        // notifier.notifyDungeonGeneration("drowned", absX, absY + 3, absZ);
     }
 }

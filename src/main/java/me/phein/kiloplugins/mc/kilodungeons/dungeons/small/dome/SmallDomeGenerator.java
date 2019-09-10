@@ -1,7 +1,6 @@
 package me.phein.kiloplugins.mc.kilodungeons.dungeons.small.dome;
 
 import me.phein.kiloplugins.mc.kilodungeons.util.Palette;
-import me.phein.kiloplugins.mc.kilodungeons.util.randomizer.Randomizer;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.BlockFace;
@@ -21,19 +20,22 @@ public abstract class SmallDomeGenerator {
     private final World world;
     private final int originX, originY, originZ;
 
+    private final double brokenRate;
     private final double treasureChance;
 
     private final NoiseGenerator noiseGenerator;
 
-    public SmallDomeGenerator(SmallDomePalette palette,
-                              World world, int originX, int originZ, NoiseGenerator noiseGenerator, double treasureChance) {
+    public SmallDomeGenerator(SmallDomePalette palette, double brokenRate,
+                              World world, int originX, int originZ, NoiseGenerator noiseGenerator,
+                              double treasureChance) {
         this.palette = palette;
         this.world = world;
 
         this.originX = originX;
         this.originZ = originZ;
-        this.originY = getOriginY(world);
+        this.originY = calculateOriginY(world);
 
+        this.brokenRate = brokenRate;
         this.treasureChance = treasureChance;
 
         this.noiseGenerator = noiseGenerator;
@@ -42,10 +44,13 @@ public abstract class SmallDomeGenerator {
     public int getOriginX() {
         return originX;
     }
-    public abstract int getOriginY(World world); // Usually the highest block, but f.e. in the ocean it should ignore water and corals on the way down etc.
+    public int getOriginY() {
+        return originY;
+    }
     public int getOriginZ() {
         return originZ;
     }
+    protected abstract int calculateOriginY(World world); // Usually the highest block, but f.e. in the ocean it should ignore water and corals on the way down etc.
 
     public boolean generate() {
         if (originY < 0) return false;
@@ -124,7 +129,6 @@ public abstract class SmallDomeGenerator {
         generateMirrored(palette.getSolidPillarMaterial(), 1, 5, 0, 0.75, "ceiling");
         generateMirrored(palette.getSolidPillarMaterial(), 1, 5, 1, 0.75, "ceiling");
     }
-
     // Small recurring pattern in the ceiling generation.
     private void generateCeilingBase(int yOffset, int radius) {
         generateMirrored(palette.getPartPillarMaterial(), yOffset, radius, 0, 0.75, Bisected.Half.BOTTOM, "ceiling");
@@ -148,10 +152,11 @@ public abstract class SmallDomeGenerator {
     }
 
     private void generateBrokenFloor() {
-        for (int radius = 2; radius <= 3; radius++) { // TODO Different broken floors for 2 and 3 radius?
-            for (int offset = radius; offset >= 0; offset--) {
-                generateMirrored(palette.getBrokenFloorMaterial(), radius, offset, "brokenfloor");
-            }
+        for (int offset = 2; offset >= 0; offset--) {
+            generateMirrored(palette.getInnerBrokenFloorMaterial(), 1, 2, offset, "brokenfloor");
+        }
+        for (int offset = 3; offset >= 0; offset--) {
+            generateMirrored(palette.getOuterBrokenFloorMaterial(), 1, 3, offset, "brokenfloor");
         }
     }
 
@@ -182,19 +187,14 @@ public abstract class SmallDomeGenerator {
             generateLoot(world, originX + 1, originY + 1, originZ - 3, BlockFace.NORTH, treasure4);
         }
     }
-
-    private void generateMirrored(Palette<Material> materialPalette, int radius, int offset, String salt) {
-        generateMirrored(materialPalette, 0, radius, offset, salt);
-    }
+    protected abstract void generateLoot(World world, int x, int y, int z, BlockFace facing, boolean treasure);
 
     private void generateMirrored(Palette<Material> materialPalette, int yOffset, int radius, int offset, String salt) {
         generateMirrored(materialPalette, yOffset, radius, offset, 1.0, salt);
     }
-
     private void generateMirrored(Palette<Material> materialPalette, int yOffset, int radius, int offset, double selectionPace, String salt) {
         generateMirrored(materialPalette, yOffset, radius, offset, selectionPace, null, salt);
     }
-
     private void generateMirrored(Palette<Material> materialPalette, int yOffset, int radius, int offset, double selectionPace, Bisected.Half half, String salt) {
         if (half == Bisected.Half.BOTTOM) {
             generateBlock(originX + radius, originY + yOffset, originZ + offset, materialPalette, selectionPace, BlockFace.WEST, half, salt);
@@ -237,17 +237,17 @@ public abstract class SmallDomeGenerator {
     }
 
     private void generateBlock(int x, int y, int z, Palette<Material> materialPalette, String salt) {
-        double blockSeed = normalizedNoise(x, y, z, salt);
-        world.getBlockAt(x, y, z).setType(materialPalette.withSeed(blockSeed));
+        generateBlock(x, y, z, materialPalette, 1.0, salt);
     }
-
     private void generateBlock(int x, int y, int z, Palette<Material> materialPalette, double selectionPace, String salt) {
-        double blockSeed = normalizedNoise(x, y, z, selectionPace, salt);
-        world.getBlockAt(x, y, z).setType(materialPalette.withSeed(blockSeed));
+        generateBlock(x, y, z, materialPalette, selectionPace, null, null, salt);
     }
-
     private void generateBlock(int x, int y, int z, Palette<Material> materialPalette, double selectionPace, BlockFace facing, Bisected.Half half, String salt) {
+        double skipSeed = normalizedNoise(x, y, z, "skip");
+        if (skipSeed < brokenRate) return;
+
         double blockSeed = normalizedNoise(x, y, z, selectionPace, salt);
+
         BlockData data = materialPalette.withSeed(blockSeed).createBlockData();
 
         if (facing != null) {
@@ -273,21 +273,17 @@ public abstract class SmallDomeGenerator {
         world.getBlockAt(x, y, z).setBlockData(data);
     }
 
-    protected abstract void generateLoot(World world, int x, int y, int z, BlockFace facing, boolean treasure);
-
     protected final double normalizedNoise(int x, int y, String salt) {
         return (noiseGenerator.noise(x + salt.hashCode(), y + salt.hashCode()) + 1.0) / 2;
     }
-
     protected final double normalizedNoise(int x, int y, int z, String salt) {
         return (noiseGenerator.noise(x + salt.hashCode(), y + salt.hashCode(), z + salt.hashCode()) + 1.0) / 2;
     }
-
     protected final double normalizedNoise(int x, int y, int z, double selectionPace, String salt) {
         return (noiseGenerator.noise(
-                (x + salt.hashCode()) * selectionPace,
-                (y + salt.hashCode()) * selectionPace,
-                (z + salt.hashCode()) * selectionPace
+                (x + salt.hashCode() % 64) * selectionPace,
+                (y + salt.hashCode() % 64) * selectionPace,
+                (z + salt.hashCode() % 64) * selectionPace
         ) + 1.0) / 2;
     }
 }

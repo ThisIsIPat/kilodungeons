@@ -1,6 +1,9 @@
 package me.phein.kiloplugins.mc.kilodungeons.dungeons.small.dome;
 
+import me.phein.kiloplugins.mc.kilodungeons.event.KiloDungeonSpawnEvent;
+import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
+import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.generator.BlockPopulator;
 import org.bukkit.util.noise.NoiseGenerator;
@@ -11,18 +14,18 @@ import java.util.Random;
 /**
  * 11x11 dome-like dungeon structure
  */
-public abstract class SmallDomePopulator extends BlockPopulator {
+public class SmallDomePopulator extends BlockPopulator {
 
     private final NoiseGenerator noiseGenerator;
-    private final SmallDomePalette palette;
 
     private final double domeProbabilityPerChunk;
+    private final double treasureChance;
 
-    public SmallDomePopulator(long seed, SmallDomePalette palette, double domeProbabilityPerChunk) {
+    public SmallDomePopulator(long seed, double domeProbabilityPerChunk, double treasureChance) {
         this.noiseGenerator = new SimplexNoiseGenerator(seed);
-        this.palette = palette;
 
         this.domeProbabilityPerChunk = domeProbabilityPerChunk;
+        this.treasureChance = treasureChance;
     }
 
     @Override
@@ -50,13 +53,16 @@ public abstract class SmallDomePopulator extends BlockPopulator {
         int offsetX = (int) (16 * noiseGenerator.noise(chunkX * 16));
         int offsetZ = (int) (16 * noiseGenerator.noise(chunkZ * 16));
 
-        int absX = chunkX + offsetX;
-        int absZ = chunkZ + offsetZ;
+        int absX = chunkX * 16 + offsetX;
+        int absZ = chunkZ * 16 + offsetZ;
 
         SmallDomeGenerator generator = createGenerator(world, absX, absZ);
-        if (generator == null) return;
+        if (generator == null || !generator.generate()) return;
 
-        generator.generate(); // TODO Notify of dungeon via KiloDungeonsNotifier
+        Location dungeonLocation = new Location(world, absX, generator.getOriginY(), absZ);
+        Location teleportLocation = new Location(world, absX, generator.getOriginY() + 3, absZ);
+
+        Bukkit.getPluginManager().callEvent(new KiloDungeonSpawnEvent(dungeonLocation, teleportLocation));
     }
 
     private SmallDomeGenerator createGenerator(World world, int x, int z) {
@@ -73,7 +79,7 @@ public abstract class SmallDomePopulator extends BlockPopulator {
             case FROZEN_OCEAN:
             case LUKEWARM_OCEAN:
             case WARM_OCEAN:
-                return new OceanSmallDomeGenerator(world, x, z, noiseGenerator);
+                return new OceanSmallDomeGenerator(world, x, z, noiseGenerator, treasureChance);
         }
     }
 }

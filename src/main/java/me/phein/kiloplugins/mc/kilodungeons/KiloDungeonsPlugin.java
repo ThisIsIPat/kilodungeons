@@ -3,7 +3,9 @@ package me.phein.kiloplugins.mc.kilodungeons;
 import me.phein.kiloplugins.mc.kilodungeons.command.KiloDungeonsCommandExecutor;
 import me.phein.kiloplugins.mc.kilodungeons.command.KiloDungeonsNotifierCommandExecutor;
 import me.phein.kiloplugins.mc.kilodungeons.config.ConfigManager;
+import me.phein.kiloplugins.mc.kilodungeons.config.v0_1.Config;
 import me.phein.kiloplugins.mc.kilodungeons.dungeons.drowned.DrownedDungeonPopulator;
+import me.phein.kiloplugins.mc.kilodungeons.dungeons.small.dome.SmallDomePopulator;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -20,6 +22,12 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class KiloDungeonsPlugin extends JavaPlugin implements Listener {
+
+    private static KiloDungeonsPlugin INSTANCE;
+    public static KiloDungeonsPlugin getInstance() {
+        return INSTANCE;
+    }
+
     private ConfigManager configManager;
     private final List<RuntimeException> exceptions = new LinkedList<>();
 
@@ -27,6 +35,7 @@ public class KiloDungeonsPlugin extends JavaPlugin implements Listener {
 
     @Override
     public void onLoad() {
+        KiloDungeonsPlugin.INSTANCE = this;
         this.configManager = new ConfigManager(this);
     }
 
@@ -35,6 +44,7 @@ public class KiloDungeonsPlugin extends JavaPlugin implements Listener {
         Metrics metrics = new Metrics(this);
 
         Bukkit.getPluginManager().registerEvents(this, this);
+        Bukkit.getPluginManager().registerEvents(notifierCommand, this);
         Bukkit.getPluginCommand("kilodungeons").setExecutor(new KiloDungeonsCommandExecutor(this));
         Bukkit.getPluginCommand("dungeonnotify").setExecutor(notifierCommand);
     }
@@ -42,7 +52,9 @@ public class KiloDungeonsPlugin extends JavaPlugin implements Listener {
     @EventHandler
     public void onWorldInit(WorldInitEvent event) {
         try {
-            BlockPopulator drownedDungeonPopulator = new DrownedDungeonPopulator(event.getWorld(), this.getLogger(), configManager.getUpdatedConfig(), notifierCommand);
+            Config config = configManager.getUpdatedConfig();
+            BlockPopulator drownedDungeonPopulator = new SmallDomePopulator(event.getWorld().getSeed(),
+                    config.getDrownedDungeonSpawnChance(), config.getDrownedDungeonTreasureChance());
             event.getWorld().getPopulators().add(drownedDungeonPopulator);
         } catch (RuntimeException e) {
             exceptions.add(e);

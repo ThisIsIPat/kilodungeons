@@ -7,7 +7,6 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.jetbrains.annotations.NotNull;
 
 public class KiloDungeonsCommandExecutor implements CommandExecutor {
 
@@ -18,7 +17,7 @@ public class KiloDungeonsCommandExecutor implements CommandExecutor {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (sender instanceof Entity) {
             sender.sendMessage("" + ChatColor.DARK_BLUE + ChatColor.BOLD + "Kilo" + ChatColor.DARK_PURPLE + "Dungeons"
                     + ChatColor.GOLD + " v" + version

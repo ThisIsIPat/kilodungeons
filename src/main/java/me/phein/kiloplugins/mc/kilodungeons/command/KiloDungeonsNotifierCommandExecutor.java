@@ -1,5 +1,6 @@
 package me.phein.kiloplugins.mc.kilodungeons.command;
 
+import me.phein.kiloplugins.mc.kilodungeons.event.KiloDungeonSpawnEvent;
 import net.md_5.bungee.api.chat.*;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -7,18 +8,23 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 
 import java.util.HashSet;
 import java.util.Set;
 
-public class KiloDungeonsNotifierCommandExecutor implements CommandExecutor {
+public class KiloDungeonsNotifierCommandExecutor implements CommandExecutor, Listener {
 
     private final Set<String> senderNames = new HashSet<>();
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (sender instanceof Player) {
+            if (args.length != 0) {
+                sender.sendMessage(ChatColor.GRAY + "Note: Turning on notifications for other players is not yet supported.\nIf this feature is desired, please tell us on Discord.");
+            }
             if (!senderNames.contains(sender.getName())) {
                 // TODO: Specify what kind of dungeon you want to be notified to
                 sender.sendMessage(ChatColor.GRAY + "You will now be notified when a dungeon spawns.");
@@ -28,12 +34,16 @@ public class KiloDungeonsNotifierCommandExecutor implements CommandExecutor {
                 senderNames.remove(sender.getName());
             }
         } else {
+            if (args.length != 0) {
+                sender.sendMessage("Note: Turning on notifications for other players is not yet supported.\nIf this feature is desired, please tell us on Discord.");
+            }
             sender.sendMessage("This command works in the client on players only.");
         }
         return true;
     }
 
-    public void notifyDungeonGeneration(String dungeonName, int x, int y, int z) {
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onDungeon(KiloDungeonSpawnEvent event) {
         for (String senderName : senderNames) {
             Player sender = Bukkit.getPlayerExact(senderName);
 
@@ -41,12 +51,16 @@ public class KiloDungeonsNotifierCommandExecutor implements CommandExecutor {
                 continue;
             }
 
-            sender.sendMessage(ChatColor.GRAY + "A dungeon \"" + ChatColor.BOLD + dungeonName + ChatColor.GRAY + "\" spawned withSeed the coordinates:");
-            ComponentBuilder builder = new ComponentBuilder(ChatColor.GOLD + "x " + ChatColor.YELLOW + x + "\n" +
-                    ChatColor.GOLD + "y " + ChatColor.YELLOW + y + "\n" +
-                    ChatColor.GOLD + "z " + ChatColor.YELLOW + z);
-            builder.event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/minecraft:tp " + x + " " + y + " " + z));
-            builder.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new BaseComponent[]{new TextComponent("Click to tp to these coordinates!")}));
+            //sender.sendMessage(ChatColor.GRAY + "A dungeon \"" + ChatColor.BOLD + dungeonName + ChatColor.GRAY + "\" spawned at the coordinates:");
+            sender.sendMessage(ChatColor.GRAY + "A dungeon spawned at the coordinates:");
+            ComponentBuilder builder = new ComponentBuilder(ChatColor.GOLD + "x " + ChatColor.YELLOW + event.getDungeonLocation().getBlockX() + "\n" +
+                    ChatColor.GOLD + "y " + ChatColor.YELLOW + event.getDungeonLocation().getBlockY() + "\n" +
+                    ChatColor.GOLD + "z " + ChatColor.YELLOW + event.getDungeonLocation().getBlockZ());
+            builder.event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/minecraft:tp " +
+                    event.getTeleportLocation().getX() + " " +
+                    event.getTeleportLocation().getY() + " " +
+                    event.getTeleportLocation().getZ()));
+            builder.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new BaseComponent[]{new TextComponent(ChatColor.GRAY + "Click to tp to these coordinates!")}));
 
             sender.spigot().sendMessage(builder.create());
         }

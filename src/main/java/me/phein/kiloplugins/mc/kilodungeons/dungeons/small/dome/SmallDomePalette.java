@@ -7,7 +7,8 @@ import org.bukkit.entity.EntityType;
 public interface SmallDomePalette {
     Palette<Material> getFloorCenter();
     Palette<Material> getFloorMaterial();
-    Palette<Material> getBrokenFloorMaterial();
+    Palette<Material> getInnerBrokenFloorMaterial();
+    Palette<Material> getOuterBrokenFloorMaterial();
 
     Palette<Material> getSpawnerPost();
     Palette<EntityType> getSpawnerType();
