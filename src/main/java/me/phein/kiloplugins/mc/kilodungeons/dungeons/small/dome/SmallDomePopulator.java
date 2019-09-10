@@ -80,6 +80,15 @@ public class SmallDomePopulator extends BlockPopulator {
             case LUKEWARM_OCEAN:
             case WARM_OCEAN:
                 return new OceanSmallDomeGenerator(world, x, z, noiseGenerator, treasureChance);
+            case DESERT:
+            case DESERT_HILLS:
+            case DESERT_LAKES:/*
+            case BADLANDS:
+            case BADLANDS_PLATEAU:
+            case ERODED_BADLANDS:
+            case WOODED_BADLANDS_PLATEAU:
+            case MODIFIED_WOODED_BADLANDS_PLATEAU:*/
+                return new DesertSmallDomeGenerator(world, x, z, noiseGenerator, treasureChance);
         }
     }
 }

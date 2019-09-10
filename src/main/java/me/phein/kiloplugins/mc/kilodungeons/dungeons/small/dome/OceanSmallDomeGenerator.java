@@ -103,6 +103,9 @@ public class OceanSmallDomeGenerator extends SmallDomeWithChestGenerator {
         return -1;
     }
 
+    @Override protected boolean isWaterlogged() {
+        return true;
+    }
     @Override protected LootTable getBadLootTable() {
         return LootTables.UNDERWATER_RUIN_SMALL.getLootTable();
     }

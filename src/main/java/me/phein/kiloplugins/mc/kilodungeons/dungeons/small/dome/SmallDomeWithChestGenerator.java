@@ -26,7 +26,7 @@ public abstract class SmallDomeWithChestGenerator extends SmallDomeGenerator {
 
         Chest chestBlockData = (Chest) Material.CHEST.createBlockData();
         chestBlockData.setFacing(facing);
-        chestBlockData.setWaterlogged(true);
+        chestBlockData.setWaterlogged(isWaterlogged());
         block.setBlockData(chestBlockData);
 
         Lootable chest = (Lootable) block.getState();
@@ -36,6 +36,7 @@ public abstract class SmallDomeWithChestGenerator extends SmallDomeGenerator {
         ((BlockState) chest).update();
     }
 
+    protected abstract boolean isWaterlogged();
     protected abstract LootTable getBadLootTable();
     protected abstract LootTable getGoodLootTable();
 }

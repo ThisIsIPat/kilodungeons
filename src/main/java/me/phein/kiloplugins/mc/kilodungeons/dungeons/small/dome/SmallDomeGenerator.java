@@ -67,7 +67,7 @@ public abstract class SmallDomeGenerator {
         return true;
     }
 
-    private void generateFloor() {
+    protected void generateFloor() {
         // FLOOR - center
         generateBlock(originX, originY, originZ, palette.getFloorCenter(), 0.75, "floor");
 
@@ -86,7 +86,7 @@ public abstract class SmallDomeGenerator {
         }
     }
 
-    private void generateCeiling() {
+    protected void generateCeiling() {
         int ceilingHeight = 6;
 
         // RADIUS = 1
@@ -130,12 +130,12 @@ public abstract class SmallDomeGenerator {
         generateMirrored(palette.getSolidPillarMaterial(), 1, 5, 1, 0.75, "ceiling");
     }
     // Small recurring pattern in the ceiling generation.
-    private void generateCeilingBase(int yOffset, int radius) {
+    protected void generateCeilingBase(int yOffset, int radius) {
         generateMirrored(palette.getPartPillarMaterial(), yOffset, radius, 0, 0.75, Bisected.Half.BOTTOM, "ceiling");
         generateMirrored(palette.getSolidPillarMaterial(), yOffset, radius, 1, 0.75, Bisected.Half.BOTTOM, "ceiling");
     }
 
-    private void generateCorners() {
+    protected void generateCorners() {
         generateMirrored(palette.getCornerMaterial(), 1, 4, 2, "corner");
         generateMirrored(palette.getCornerMaterial(), 1, 4, 3, "corner");
         generateMirrored(palette.getCornerMaterial(), 2, 4, 2, "corner");
@@ -151,7 +151,7 @@ public abstract class SmallDomeGenerator {
         generateMirrored(palette.getCornerMaterial(), 6, 2, 2, "corner");
     }
 
-    private void generateBrokenFloor() {
+    protected void generateBrokenFloor() {
         for (int offset = 2; offset >= 0; offset--) {
             generateMirrored(palette.getInnerBrokenFloorMaterial(), 1, 2, offset, "brokenfloor");
         }
@@ -160,7 +160,7 @@ public abstract class SmallDomeGenerator {
         }
     }
 
-    private void generateSpawner() {
+    protected void generateSpawner() {
         generateBlock(originX, originY + 1, originZ, palette.getSpawnerPost(), "spawnerpost");
 
         double paletteSeedSpawnerType = normalizedNoise(originX, originZ, "spawner");
@@ -170,7 +170,7 @@ public abstract class SmallDomeGenerator {
         spawner.update();
     }
 
-    private void generateTreasure() {
+    protected void generateTreasure() {
         double chestSelector = normalizedNoise(originX, originZ, "treasure");
 
         if (chestSelector < 0.5) {
@@ -189,13 +189,13 @@ public abstract class SmallDomeGenerator {
     }
     protected abstract void generateLoot(World world, int x, int y, int z, BlockFace facing, boolean treasure);
 
-    private void generateMirrored(Palette<Material> materialPalette, int yOffset, int radius, int offset, String salt) {
+    protected void generateMirrored(Palette<Material> materialPalette, int yOffset, int radius, int offset, String salt) {
         generateMirrored(materialPalette, yOffset, radius, offset, 1.0, salt);
     }
-    private void generateMirrored(Palette<Material> materialPalette, int yOffset, int radius, int offset, double selectionPace, String salt) {
+    protected void generateMirrored(Palette<Material> materialPalette, int yOffset, int radius, int offset, double selectionPace, String salt) {
         generateMirrored(materialPalette, yOffset, radius, offset, selectionPace, null, salt);
     }
-    private void generateMirrored(Palette<Material> materialPalette, int yOffset, int radius, int offset, double selectionPace, Bisected.Half half, String salt) {
+    protected void generateMirrored(Palette<Material> materialPalette, int yOffset, int radius, int offset, double selectionPace, Bisected.Half half, String salt) {
         if (half == Bisected.Half.BOTTOM) {
             generateBlock(originX + radius, originY + yOffset, originZ + offset, materialPalette, selectionPace, BlockFace.WEST, half, salt);
             generateBlock(originX - radius, originY + yOffset, originZ - offset, materialPalette, selectionPace, BlockFace.EAST, half, salt);
@@ -236,13 +236,13 @@ public abstract class SmallDomeGenerator {
         }
     }
 
-    private void generateBlock(int x, int y, int z, Palette<Material> materialPalette, String salt) {
+    protected void generateBlock(int x, int y, int z, Palette<Material> materialPalette, String salt) {
         generateBlock(x, y, z, materialPalette, 1.0, salt);
     }
-    private void generateBlock(int x, int y, int z, Palette<Material> materialPalette, double selectionPace, String salt) {
+    protected void generateBlock(int x, int y, int z, Palette<Material> materialPalette, double selectionPace, String salt) {
         generateBlock(x, y, z, materialPalette, selectionPace, null, null, salt);
     }
-    private void generateBlock(int x, int y, int z, Palette<Material> materialPalette, double selectionPace, BlockFace facing, Bisected.Half half, String salt) {
+    protected void generateBlock(int x, int y, int z, Palette<Material> materialPalette, double selectionPace, BlockFace facing, Bisected.Half half, String salt) {
         double skipSeed = normalizedNoise(x, y, z, "skip");
         if (skipSeed < brokenRate) return;
 
