@@ -35,8 +35,8 @@ public abstract class SmallDomeGenerator {
         this.world = world;
 
         this.originX = originX;
-        this.originY = calculateOriginY();
         this.originZ = originZ;
+        this.originY = calculateOriginY(); // Do NOT put this before originX or originZ assignment, calculateOriginY() uses them
 
         this.brokenRate = brokenRate;
         this.treasureChance = treasureChance;

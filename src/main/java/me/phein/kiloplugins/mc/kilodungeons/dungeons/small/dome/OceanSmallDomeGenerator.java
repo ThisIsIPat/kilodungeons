@@ -103,12 +103,6 @@ public class OceanSmallDomeGenerator extends SmallDomeWithChestGenerator {
                 default:
                     y--;
                     continue;
-                case WATER:
-                case KELP:
-                case KELP_PLANT:
-                case SEAGRASS:
-                case SEA_PICKLE:
-                case TALL_SEAGRASS:
                 case SAND:
                 case GRAVEL:
                 case DIRT:
