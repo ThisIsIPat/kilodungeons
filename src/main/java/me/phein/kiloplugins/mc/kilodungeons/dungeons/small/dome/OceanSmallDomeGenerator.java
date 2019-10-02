@@ -81,17 +81,34 @@ public class OceanSmallDomeGenerator extends SmallDomeWithChestGenerator {
                 treasureChance);
     }
 
+    public OceanSmallDomeGenerator(World world, int x, int y, int z, NoiseGenerator noiseGenerator,
+                                   double treasureChance) {
+        super(new OceanSmallDomePalette(), 0.4,
+                world, x, y, z, noiseGenerator,
+                treasureChance);
+    }
+
+    @Override public SmallDomeDungeon getSmallDomeCategory() {
+        return SmallDomeDungeon.OCEAN;
+    }
+
     @Override
-    protected int calculateOriginY(World world) {
+    protected int calculateOriginY() {
         int x = getOriginX();
         int z = getOriginZ();
 
-        int y = world.getHighestBlockYAt(x, z);
+        int y = getWorld().getHighestBlockYAt(x, z);
         while (y > 0) {
-            switch (world.getBlockAt(x, y, z).getType()) {
+            switch (getWorld().getBlockAt(x, y, z).getType()) {
                 default:
                     y--;
                     continue;
+                case WATER:
+                case KELP:
+                case KELP_PLANT:
+                case SEAGRASS:
+                case SEA_PICKLE:
+                case TALL_SEAGRASS:
                 case SAND:
                 case GRAVEL:
                 case DIRT:

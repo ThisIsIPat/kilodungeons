@@ -20,11 +20,13 @@ group project_group
 version project_version
 
 repositories {
-    maven { url 'https://jitpack.io' }
-    jcenter()
-    maven { url = "http://repo.aikar.co/nexus/content/groups/aikar/" }
     maven { url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
     maven { url = 'https://oss.sonatype.org/content/repositories/snapshots' }
+
+    mavenCentral()
+    jcenter()
+    maven { url 'https://jitpack.io' }
+    maven { url = "http://repo.aikar.co/nexus/content/groups/aikar/" }
     mavenLocal()
 }
 
@@ -36,6 +38,7 @@ dependencies {
 
     implementation 'org.bstats:bstats-bukkit:1.5'
     implementation 'com.github.JavaFactoryDev:LightningStorage:2.3.7'
+    implementation 'fr.minuskube.inv:smart-invs:1.2.7'
     // implementation 'co.aikar:minecraft-timings:1.0.4'
 
     /// TEST ///

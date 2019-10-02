@@ -1,9 +1,6 @@
 package me.phein.kiloplugins.mc.kilodungeons.dungeons.small.dome;
 
-import me.phein.kiloplugins.mc.kilodungeons.event.KiloDungeonSpawnEvent;
-import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
-import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.generator.BlockPopulator;
 import org.bukkit.util.noise.NoiseGenerator;
@@ -57,12 +54,9 @@ public class SmallDomePopulator extends BlockPopulator {
         int absZ = chunkZ * 16 + offsetZ;
 
         SmallDomeGenerator generator = createGenerator(world, absX, absZ);
-        if (generator == null || !generator.generate()) return;
-
-        Location dungeonLocation = new Location(world, absX, generator.getOriginY(), absZ);
-        Location teleportLocation = new Location(world, absX, generator.getOriginY() + 3, absZ);
-
-        Bukkit.getPluginManager().callEvent(new KiloDungeonSpawnEvent(dungeonLocation, teleportLocation));
+        if (generator != null) {
+            generator.generate();
+        }
     }
 
     private SmallDomeGenerator createGenerator(World world, int x, int z) {

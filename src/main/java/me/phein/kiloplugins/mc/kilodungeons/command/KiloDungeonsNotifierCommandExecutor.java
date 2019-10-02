@@ -51,16 +51,15 @@ public class KiloDungeonsNotifierCommandExecutor implements CommandExecutor, Lis
                 continue;
             }
 
-            //sender.sendMessage(ChatColor.GRAY + "A dungeon \"" + ChatColor.BOLD + dungeonName + ChatColor.GRAY + "\" spawned at the coordinates:");
-            sender.sendMessage(ChatColor.GRAY + "A dungeon spawned at the coordinates:");
-            ComponentBuilder builder = new ComponentBuilder(ChatColor.GOLD + "x " + ChatColor.YELLOW + event.getDungeonLocation().getBlockX() + "\n" +
-                    ChatColor.GOLD + "y " + ChatColor.YELLOW + event.getDungeonLocation().getBlockY() + "\n" +
+            sender.sendMessage(ChatColor.GRAY + "A dungeon \"" + ChatColor.BOLD + event.getDungeon() + ChatColor.GRAY + "\" spawned at the coordinates:");
+            ComponentBuilder builder = new ComponentBuilder(ChatColor.GOLD + "x " + ChatColor.YELLOW + event.getDungeonLocation().getBlockX() + " | " +
+                    ChatColor.GOLD + "y " + ChatColor.YELLOW + event.getDungeonLocation().getBlockY() + " | " +
                     ChatColor.GOLD + "z " + ChatColor.YELLOW + event.getDungeonLocation().getBlockZ());
-            builder.event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/minecraft:tp " +
+            builder.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/minecraft:tp " +
                     event.getTeleportLocation().getX() + " " +
                     event.getTeleportLocation().getY() + " " +
                     event.getTeleportLocation().getZ()));
-            builder.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new BaseComponent[]{new TextComponent(ChatColor.GRAY + "Click to tp to these coordinates!")}));
+            builder.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new BaseComponent[]{new TextComponent(ChatColor.GRAY + "Teleport to these coordinates?")}));
 
             sender.spigot().sendMessage(builder.create());
         }

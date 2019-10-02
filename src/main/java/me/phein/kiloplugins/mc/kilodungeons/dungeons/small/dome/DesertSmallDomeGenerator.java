@@ -89,6 +89,17 @@ public class DesertSmallDomeGenerator extends SmallDomeWithChestGenerator {
                 treasureChance);
     }
 
+    public DesertSmallDomeGenerator(World world, int x, int y, int z, NoiseGenerator noiseGenerator,
+                                    double treasureChance) {
+        super(new DesertSmallDomePalette(), 0.0,
+                world, x, y, z, noiseGenerator,
+                treasureChance);
+    }
+
+    @Override public SmallDomeDungeon getSmallDomeCategory() {
+        return SmallDomeDungeon.DESERT;
+    }
+
     @Override
     public boolean generate() {
         if (!super.generate()) return false;
@@ -120,13 +131,13 @@ public class DesertSmallDomeGenerator extends SmallDomeWithChestGenerator {
     @Override protected void generateCorners() {}   // Corners not needed
 
     @Override
-    protected int calculateOriginY(World world) {
+    protected int calculateOriginY() {
         int x = getOriginX();
         int z = getOriginZ();
 
-        int y = world.getHighestBlockYAt(x, z);
+        int y = getWorld().getHighestBlockYAt(x, z);
         while (y > 5) {
-            switch (world.getBlockAt(x, y, z).getType()) {
+            switch (getWorld().getBlockAt(x, y, z).getType()) {
                 default:
                     y--;
                     continue;

@@ -1,6 +1,9 @@
 package me.phein.kiloplugins.mc.kilodungeons.dungeons.small.dome;
 
+import me.phein.kiloplugins.mc.kilodungeons.event.KiloDungeonSpawnEvent;
 import me.phein.kiloplugins.mc.kilodungeons.util.Palette;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.BlockFace;
@@ -32,8 +35,8 @@ public abstract class SmallDomeGenerator {
         this.world = world;
 
         this.originX = originX;
+        this.originY = calculateOriginY();
         this.originZ = originZ;
-        this.originY = calculateOriginY(world);
 
         this.brokenRate = brokenRate;
         this.treasureChance = treasureChance;
@@ -41,19 +44,36 @@ public abstract class SmallDomeGenerator {
         this.noiseGenerator = noiseGenerator;
     }
 
-    public int getOriginX() {
-        return originX;
+    public SmallDomeGenerator(SmallDomePalette palette, double brokenRate,
+                              World world, int originX, int originY, int originZ, NoiseGenerator noiseGenerator,
+                              double treasureChance) {
+        this.palette = palette;
+        this.world = world;
+
+        this.originX = originX;
+        this.originY = originY;
+        this.originZ = originZ;
+
+        this.brokenRate = brokenRate;
+        this.treasureChance = treasureChance;
+
+        this.noiseGenerator = noiseGenerator;
     }
-    public int getOriginY() {
-        return originY;
-    }
-    public int getOriginZ() {
-        return originZ;
-    }
-    protected abstract int calculateOriginY(World world); // Usually the highest block, but f.e. in the ocean it should ignore water and corals on the way down etc.
+
+
 
     public boolean generate() {
-        if (originY < 0) return false;
+        // Event creation
+        Location dungeonLocation = new Location(world, getOriginX(), getOriginY(), getOriginZ());
+        Location teleportLocation = new Location(world, getOriginX(), getOriginY() + 3, getOriginZ());
+        KiloDungeonSpawnEvent spawnEvent = new KiloDungeonSpawnEvent(getSmallDomeCategory(), dungeonLocation, teleportLocation);
+
+        // Optional native cancelling
+        if (originY < 0) spawnEvent.setCancelled(true);
+
+        Bukkit.getPluginManager().callEvent(spawnEvent);
+
+        if (spawnEvent.isCancelled()) return false;
 
         generateFloor();
         generateCeiling();
@@ -286,4 +306,25 @@ public abstract class SmallDomeGenerator {
                 (z + salt.hashCode() % 64) * selectionPace
         ) + 1.0) / 2;
     }
+
+    public World getWorld() {
+        return world;
+    }
+    public int getOriginX() {
+        return originX;
+    }
+    public int getOriginY() {
+        return originY;
+    }
+    public int getOriginZ() {
+        return originZ;
+    }
+
+    /**
+     * Is used in constructor to get the y value of the dungeon.
+     *
+     * @return y value the dungeon bases on
+     */
+    protected abstract int calculateOriginY();
+    public abstract SmallDomeDungeon getSmallDomeCategory();
 }

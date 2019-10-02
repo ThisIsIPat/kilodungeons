@@ -1,10 +1,11 @@
 package me.phein.kiloplugins.mc.kilodungeons;
 
+import fr.minuskube.inv.InventoryManager;
 import me.phein.kiloplugins.mc.kilodungeons.command.KiloDungeonsCommandExecutor;
+import me.phein.kiloplugins.mc.kilodungeons.command.KiloDungeonsGenerateCommandExecutor;
 import me.phein.kiloplugins.mc.kilodungeons.command.KiloDungeonsNotifierCommandExecutor;
 import me.phein.kiloplugins.mc.kilodungeons.config.ConfigManager;
 import me.phein.kiloplugins.mc.kilodungeons.config.v0_1.Config;
-import me.phein.kiloplugins.mc.kilodungeons.dungeons.drowned.DrownedDungeonPopulator;
 import me.phein.kiloplugins.mc.kilodungeons.dungeons.small.dome.SmallDomePopulator;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
@@ -15,7 +16,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.world.WorldInitEvent;
 import org.bukkit.generator.BlockPopulator;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.LinkedList;
@@ -30,6 +30,7 @@ public class KiloDungeonsPlugin extends JavaPlugin implements Listener {
 
     private ConfigManager configManager;
     private final List<RuntimeException> exceptions = new LinkedList<>();
+    private InventoryManager inventoryManager = new InventoryManager(this);
 
     private KiloDungeonsNotifierCommandExecutor notifierCommand = new KiloDungeonsNotifierCommandExecutor();
 
@@ -41,12 +42,16 @@ public class KiloDungeonsPlugin extends JavaPlugin implements Listener {
 
     @Override
     public void onEnable() {
-        Metrics metrics = new Metrics(this);
+        inventoryManager.init();
+
+        new Metrics(this); // bStats
 
         Bukkit.getPluginManager().registerEvents(this, this);
         Bukkit.getPluginManager().registerEvents(notifierCommand, this);
+
         Bukkit.getPluginCommand("kilodungeons").setExecutor(new KiloDungeonsCommandExecutor(this));
         Bukkit.getPluginCommand("dungeonnotify").setExecutor(notifierCommand);
+        Bukkit.getPluginCommand("dungeongenerate").setExecutor(new KiloDungeonsGenerateCommandExecutor(configManager.getUpdatedConfig().getDrownedDungeonTreasureChance()));
     }
 
     @EventHandler
@@ -79,5 +84,9 @@ public class KiloDungeonsPlugin extends JavaPlugin implements Listener {
             player.sendMessage(ChatColor.YELLOW + "View the console for a detailed error report on startup. If you can't fix the errors, please type " + ChatColor.GOLD + ChatColor.BOLD + "/kdun" + ChatColor.YELLOW + " for support.");
             player.sendMessage(ChatColor.GRAY + "This message is only shown to operators on the server.");
         }
+    }
+
+    public InventoryManager getInventoryManager() {
+        return this.inventoryManager;
     }
 }
